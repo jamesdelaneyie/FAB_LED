@@ -173,7 +173,12 @@ enum avrLedStripPort {
 	C = 3,
 	D = 4,
 	E = 5,
-	F = 6
+	F = 6,
+	G = 7,
+	H = 8,
+	J = 9,
+	K = 10,
+	L = 11
 };
 
 /// @brief Pixel type declares the byte order for every color of the LED strip
@@ -219,18 +224,39 @@ enum ledProtocol {
 
 #ifndef ARDUINO_ARCH_MEGAAVR
 
-#if defined(PORTD)
-#define DUMMY_PORT PORTD
-#define DUMMY_DDR   DDRD
+#if defined(PORTA)
+#define DUMMY_PORT PORTA
+#define DUMMY_DDR   DDRA
 #elif defined(PORTB)
 #define DUMMY_PORT PORTB
 #define DUMMY_DDR   DDRB
-#elif defined(PORTA)
-#define DUMMY_PORT PORTA
-#define DUMMY_DDR   DDRA
 #elif defined(PORTC)
 #define DUMMY_PORT PORTC
 #define DUMMY_DDR   DDRC
+#elif defined(PORTD)
+#define DUMMY_PORT PORTD
+#define DUMMY_DDR   DDRD
+#elif defined(PORTE)
+#define DUMMY_PORT PORTE
+#define DUMMY_DDR   DDRE
+#elif defined(PORTF)
+#define DUMMY_PORT PORTF
+#define DUMMY_DDR   DDRF
+#elif defined(PORTG)
+#define DUMMY_PORT PORTG
+#define DUMMY_DDR   DDRG
+#elif defined(PORTH)
+#define DUMMY_PORT PORTH
+#define DUMMY_DDR   DDRH
+#elif defined(PORTJ)
+#define DUMMY_PORT PORTJ
+#define DUMMY_DDR   DDRJ
+#elif defined(PORTK)
+#define DUMMY_PORT PORTK
+#define DUMMY_DDR   DDRK
+#elif defined(PORTL)
+#define DUMMY_PORT PORTL
+#define DUMMY_DDR   DDRL
 #endif // PORT
 
 // If any of the ports we support does not exist, re-map it to the dummy port.
@@ -259,6 +285,26 @@ enum ledProtocol {
 #define PORTF DUMMY_PORT
 #define  DDRF DUMMY_DDR
 #endif // PORTF
+#ifndef PORTG
+#define PORTG DUMMY_PORT
+#define  DDRG DUMMY_DDR
+#endif // PORTG
+#ifndef PORTH
+#define PORTH DUMMY_PORT
+#define  DDRH DUMMY_DDR
+#endif // PORTH
+#ifndef PORTJ
+#define PORTJ DUMMY_PORT
+#define  DDRJ DUMMY_DDR
+#endif // PORTJ
+#ifndef PORTK
+#define PORTK DUMMY_PORT
+#define  DDRK DUMMY_DDR
+#endif // PORTK
+#ifndef PORTL
+#define PORTL DUMMY_PORT
+#define  DDRL DUMMY_DDR
+#endif // PORTL
 #endif // DUMMY_PORT
 
 #else
@@ -304,6 +350,27 @@ enum ledProtocol {
 #define VPORTG_OUT DUMMY_PORT
 #define VPORTG_DIR DUMMY_DDR
 #endif
+
+#ifndef VPORTH
+#define VPORTH_OUT DUMMY_PORT
+#define VPORTH_DIR DUMMY_DDR
+#endif
+
+#ifndef VPORTJ
+#define VPORTJ_OUT DUMMY_PORT
+#define VPORTJ_DIR DUMMY_DDR
+#endif
+
+#ifndef VPORTK
+#define VPORTK_OUT DUMMY_PORT
+#define VPORTK_DIR DUMMY_DDR
+#endif
+
+#ifndef VPORTL
+#define VPORTL_OUT DUMMY_PORT
+#define VPORTL_DIR DUMMY_DDR
+#endif
+
 #endif
 
 
@@ -316,14 +383,16 @@ enum ledProtocol {
 /// Port Data Direction control Register address
 #define AVR_DDR(id) _AVR_DDR((id))
 #define _AVR_DDR(id) ((id==A) ? DDRA : (id==B) ? DDRB : (id==C) ? DDRC : \
-		(id==D) ? DDRD : (id==E) ? DDRE : DDRF)
+		(id==D) ? DDRD : (id==E) ? DDRE : (id==F) ? DDRF : (id==G) ? DDRG : \
+		(id==H) ? DDRH : (id==J) ? DDRJ : (id==K) ? DDRK : DDRL)
 #define SET_DDR_HIGH( portId, portPin) AVR_DDR(portId)  |= 1U << portPin
 #define FAB_DDR(portId, val) AVR_DDR(portId) = val
 
 /// Port address & pin level manipulation
 #define AVR_PORT(id) _AVR_PORT((id))
 #define _AVR_PORT(id) ((id==A) ? PORTA : (id==B) ? PORTB : (id==C) ? PORTC : \
-		(id==D) ? PORTD : (id==E) ? PORTE : PORTF)
+		(id==D) ? PORTD : (id==E) ? PORTE : (id==F) ? PORTF : (id==G) ? PORTG : \
+		(id==H) ? PORTH : (id==J) ? PORTJ : (id==K) ? PORTK : PORTL)
 #define FAB_PORT(portId, val) AVR_PORT(portId) = val
 // Note: gcc converts these bit manipulations to sbi and cbi instructions
 #define SET_PORT_HIGH(portId, portPin) AVR_PORT(portId) |= 1U << portPin
@@ -353,14 +422,17 @@ const int cbiCycles = 2;
 /// Port Data Direction control Register address
 #define AVR_DDR(id) _AVR_DDR((id))
 #define _AVR_DDR(id) ((id==A) ? VPORTA_DIR : (id==B) ? VPORTB_DIR : (id==C) ? VPORTC_DIR : \
-		(id==D) ? VPORTD_DIR : (id==E) ? VPORTE_DIR : VPORTF_DIR )
+		(id==D) ? VPORTD_DIR : (id==E) ? VPORTE_DIR : (id==F) ? VPORTF_DIR : (id==G) ? VPORTG_DIR : \
+		(id==H) ? VPORTH_DIR : (id==J) ? VPORTJ_DIR : (id==K) ? VPORTK_DIR : VPORTL_DIR)
+
 #define SET_DDR_HIGH( portId, portPin) AVR_DDR(portId)  |= 1U << portPin
 #define FAB_DDR(portId, val) AVR_DDR(portId) = val
 
 /// Port address & pin level manipulation
 #define AVR_PORT(id) _AVR_PORT((id))
 #define _AVR_PORT(id) ((id==A) ? VPORTA_OUT : (id==B) ? VPORTB_OUT : (id==C) ? VPORTC_OUT : \
-		(id==D) ? VPORTD_OUT : (id==E) ? VPORTE_OUT : VPORTF_OUT)
+		(id==D) ? VPORTD_OUT : (id==E) ? VPORTE_OUT : (id==F) ? VPORTF_OUT : (id==G) ? VPORTG_OUT : \
+		(id==H) ? VPORTH_OUT : (id==J) ? VPORTJ_OUT : (id==K) ? VPORTK_OUT : VPORTL_OUT)
 #define FAB_PORT(portId, val) AVR_PORT(portId) = val
 // Note: gcc converts these bit manipulations to sbi and cbi instructions
 #define SET_PORT_HIGH(portId, portPin) AVR_PORT(portId) |= 1U << portPin
@@ -823,6 +895,21 @@ avrBitbangLedStrip<FAB_TVAR>::debug(void)
 		case F:
 			printChar("F.");
 			break;
+		case G:
+			printChar("G.");
+			break;
+		case H:
+			printChar("H.");
+			break;
+		case J:
+			printChar("J.");
+			break;
+		case K:
+			printChar("K.");
+			break;	
+		case L:
+			printChar("L.");
+			break;
 		default:
 			printChar("UNKNOWN.");
 	}
@@ -850,6 +937,21 @@ avrBitbangLedStrip<FAB_TVAR>::debug(void)
 			case F:
 				printChar("F.");
 				break;
+			case G:
+				printChar("G.");
+				break;
+			case H:
+				printChar("H.");
+				break;
+			case J:
+				printChar("J.");
+				break;
+			case K:
+				printChar("K.");
+				break;
+			case L:
+				printChar("L.");
+				break;		
 			default:
 				printChar("UNKNOWN.");
 		}
@@ -1607,7 +1709,7 @@ avrBitbangLedStrip<FAB_TVAR>::sendPixels (
 				goto end;
 			}
 			const uint8_t colorIndex = elem & andMask;
-			sendBytes(bytesPerPixel, (uint8_t*)(&palette[colorIndex]));
+			sendBytes(bytesPerPixel, &palette[bytesPerPixel*colorIndex]);
 			elem >>= bitsPerPixel;
 		}
 	}
